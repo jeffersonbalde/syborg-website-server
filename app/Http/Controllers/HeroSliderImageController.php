@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 class HeroSliderImageController extends Controller
 {
     public function store(Request $request) {
+
         $validator = Validator::make($request->all(), [
             "image" => "required|mimes:png,jpg,jpeg,gif"
         ]);
@@ -24,6 +25,7 @@ class HeroSliderImageController extends Controller
 
         if(!empty($image)) {
             $extension = $image->getClientOriginalExtension();
+            
 
             $imageName = strtotime("now").".".$extension;
 
