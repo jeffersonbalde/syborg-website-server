@@ -16,7 +16,7 @@ class HeroSliderController extends Controller
             "title" => "required|string|max:255|unique:tbl_HeroSlider,title",
             "description" => "required|string|max:255|unique:tbl_HeroSlider,description",
             "content" => "required|string",
-            "image" => "nullable|image|mimes:jpg,jpeg,png,gif", 
+            "image" => "nullable|image|mimes:jpg,jpeg,png,gif|max:10240", 
         ]);
 
         if($validator->fails()) {
@@ -90,7 +90,7 @@ class HeroSliderController extends Controller
             "title" => "required|string|max:255|unique:tbl_HeroSlider,title," . $id,
             "description" => "required|string|max:255|unique:tbl_HeroSlider,description," . $id,
             "content" => "required|string",
-            "image" => "nullable|image|mimes:jpg,jpeg,png,gif", 
+            "image" => "nullable|image|mimes:jpg,jpeg,png,gif|max:10240", 
         ]);
 
 
