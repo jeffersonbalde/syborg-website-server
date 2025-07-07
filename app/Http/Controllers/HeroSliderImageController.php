@@ -11,13 +11,13 @@ class HeroSliderImageController extends Controller
     public function store(Request $request) {
 
         $validator = Validator::make($request->all(), [
-            "image" => "required|mimes:png,jpg,jpeg,gif|max:10240"
+            "image" => "required|mimes:png,jpg,jpeg,gif"
         ]);
 
         if($validator->fails()) {
             return response()->json([
                 "status" => false,
-                "errors" => $validator->errors("image"),
+                "errors" => $validator->errors(),
             ]);
         }
 
