@@ -213,4 +213,14 @@ class StudentController extends Controller
          'message' => 'Student has been deleted.'
       ]);
    }
+
+   public function showQRCode($id)
+   {
+    $student = StudentUser::findOrFail($id);
+    
+    return view('emails.qrcode_card', [
+        'student' => $student,
+        'qr_code_url' => asset("{$student->qr_code}")
+    ]);
+}
 }
