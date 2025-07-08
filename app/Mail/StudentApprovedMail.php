@@ -34,7 +34,7 @@ class StudentApprovedMail extends Mailable
             $qrUrl = 'https://syborg-server-wlpe4.ondigitalocean.app/' . $this->student->qr_code;
         }
 
-        return $this->subject("🎉 Welcome to SYBORG - Registration Approved")
+        return $this->subject("✅ You're Approved to SYBORG!")
             ->view('emails.student_approved')
             ->with([
                 'student' => $this->student,

@@ -10,7 +10,7 @@
         <p>Your SYBORG registration has been approved. You can now log in using your institutional email.</p>
         
         <p>Your official QR code identification card is ready:</p>
-        <a href="{{ route('student.qrcode', ['id' => $student->id]) }}" 
+        <a href="{{ route('student.qrcode', parameters: ['id' => $student->id]) }}" 
            target="_blank" 
            style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
            View Your QR Code Card
