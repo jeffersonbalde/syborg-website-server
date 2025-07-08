@@ -7,12 +7,17 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\client\ClientHeroSliderController;
 use App\Http\Controllers\HeroSliderController;
 use App\Http\Controllers\HeroSliderImageController;
+use App\Http\Controllers\Student\StudentController;
+use App\Http\Controllers\Student\StudentProfilePictureController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 // Route::post("authenticate", [AuthenticationController::class, "authenticate"]);
 
 Route::get("get-hero-slider", [ClientHeroSliderController::class, "index"]);
+
+Route::post("register", [StudentController::class, "store"]);
+Route::post("student-profile-picture", [StudentProfilePictureController::class, "store"]);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
@@ -40,6 +45,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // HeroSlider Image routes
     Route::post("hero-slider-image", [HeroSliderImageController::class, "store"]);
+
+      // Student routes
+    Route::get("students", [StudentController::class, "index"]);
+    Route::put('/students/{id}/approve', [StudentController::class, 'approve']);
+    Route::put('/students/{id}/disapprove', [StudentController::class, 'disapprove']);
+    Route::delete('/students/{id}', [StudentController::class, 'destroy']);
+
+    
 });
 
 Route::group(["middleware" => ["auth:sanctum"]], function() {

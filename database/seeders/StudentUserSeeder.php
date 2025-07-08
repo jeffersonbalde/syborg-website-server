@@ -29,6 +29,7 @@ class StudentUserSeeder extends Seeder
             'email' => 'jefferson.balde@sccpag.edu.ph',
             'password' => Hash::make('scc195367'),
             'profile_picture' => null,
+            'active_status' => 0,
         ]);
     }
 }

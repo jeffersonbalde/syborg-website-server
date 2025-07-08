@@ -62,10 +62,28 @@ class AuthenticationController extends Controller
             'password' => 'required',
         ]);
 
-        foreach (['admin', 'student', 'owner'] as $guard) {
+        foreach (['admin', 'student'] as $guard) {
             if (Auth::guard($guard)->attempt($request->only('email', 'password'))) {
                 $user = Auth::guard($guard)->user();
-                
+
+                if ($guard === 'student') {
+                    if ($user->active_status == 2) {
+                        Auth::guard($guard)->logout();
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Your registration is still pending approval. Please wait for the administrator to review your request.',
+                        ], 403);
+                    }
+
+                    if ($user->active_status == 0) {
+                        Auth::guard($guard)->logout();
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Your registration has been disapproved by the administrator. Please contact the Club President for further details.',
+                        ], 403);
+                    }
+                }
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Login successfully.',
@@ -78,6 +96,7 @@ class AuthenticationController extends Controller
 
         return response()->json(['status' => false, 'message' => 'Invalid credentials.'], 401);
     }
+
 
     public function logout(Request $request) {
         $user = $request->user();
