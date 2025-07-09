@@ -128,12 +128,50 @@ class StudentController extends Controller
       ], 201);
    }
 
-   public function index() {
-      $studentUser = StudentUser::orderBy("created_at", "DESC")->get();
+   public function index(Request $request) {
+      // $studentUser = StudentUser::orderBy("created_at", "DESC")->get();
+
+      // return response()->json([
+      //    "status" => true,
+      //    "data" => $studentUser,
+      // ]);
+
+      $query = StudentUser::query();
+      $totalCount = StudentUser::count(); // Get total count before filtering
+
+      if ($request->filled('search')) {
+         $search = $request->input('search');
+         $query->where(function ($q) use ($search) {
+            $q->where('firstname', 'like', "%$search%")
+               ->orWhere('middlename', 'like', "%$search%")
+               ->orWhere('lastname', 'like', "%$search%")
+               ->orWhere('edp_number', 'like', "%$search%");
+         });
+      }
+
+      if ($request->filled('gender')) {
+         $query->where('gender', $request->input('gender'));
+      }
+
+      if ($request->filled('year_level')) {
+         $query->where('year_level', $request->input('year_level'));
+      }
+
+      if ($request->filled('status')) {
+         $query->where('active_status', $request->input('status'));
+      }
+
+      if ($request->filled('course')) {
+         $query->where('course', $request->input('course'));
+      }
+
+      $students = $query->get();
+      $filteredCount = $students->count(); 
 
       return response()->json([
-         "status" => true,
-         "data" => $studentUser,
+         'data' => $students,
+         'total_count' => $totalCount,
+         'filtered_count' => $filteredCount
       ]);
    }
    
@@ -155,7 +193,7 @@ class StudentController extends Controller
 
     return response()->json([
         'status' => true,
-        'message' => 'Student has been approved.',
+        'message' => 'The student has been successfully approved. A confirmation email along with their QR code has been sent to their institutional email address.',
         'data' => $student
     ]);
    }
@@ -174,9 +212,11 @@ class StudentController extends Controller
       $student->active_status = 0; 
       $student->save();
 
+      Mail::to($student->email)->send(new StudentDisapprovedMail($student));
+
       return response()->json([
          'status' => true,
-         'message' => 'Student has been disapproved.',
+         'message' => 'The student has been disapproved. A notification email has been sent to their institutional email address.',
          'data' => $student
       ]);
    }

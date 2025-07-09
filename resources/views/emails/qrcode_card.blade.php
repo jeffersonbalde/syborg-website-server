@@ -5,147 +5,186 @@
     <title>{{ $student->firstname }}'s SYBORG ID Card</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
-        }
-        .system-card {
-            width: 600px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .card-header {
-            background-color: #f8f9fa;
-            padding: 15px 20px;
-            border-bottom: 1px solid #e0e0e0;
-            text-align: center;
-        }
-        .card-body {
+            background-color: #7c0a0a;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
             padding: 30px;
+        }
+
+        .card {
+            width: 400px;
+            height: 600px;
+            background: url('/storage/card_bg.png') center/cover no-repeat, #7c0a0a;
+            color: white;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .front, .back {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .top {
             text-align: center;
         }
-        .organization-title {
-            font-size: 22px;
-            font-weight: bold;
+
+        .top img.logo {
+            width: 50px;
             margin-bottom: 5px;
-            color: #333;
         }
-        .organization-subtitle {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 15px;
-        }
-        .college-name {
-            font-size: 18px;
+
+        .org-title {
+            font-size: 20px;
             font-weight: bold;
-            margin: 15px 0;
-            color: #333;
         }
-        .student-name {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 20px 0 5px;
-            color: #222;
+
+        .course {
+            font-size: 14px;
+            margin-top: 3px;
         }
-        .student-id {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 20px;
+
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .qr-container {
-            margin: 25px auto;
-            padding: 20px;
-            border: 1px dashed #ccc;
-            display: inline-block;
+
+        .qr img {
+            width: 180px;
+            height: 180px;
             background: white;
+            padding: 10px;
+            border-radius: 8px;
         }
-        .signature-line {
-            margin-top: 40px;
-            border-top: 1px solid #000;
-            width: 250px;
-            display: inline-block;
+
+        .student-name {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .signature {
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .signature .line {
+            margin-top: 30px;
+            border-top: 1px solid #fff;
+            width: 200px;
+            margin-left: auto;
+            margin-right: auto;
             padding-top: 5px;
         }
-        .signature-name {
-            font-size: 16px;
-            font-weight: bold;
+
+        /* BACK SIDE */
+        .logo-large {
+            width: 100px;
+            margin: 0 auto;
+            margin-top: 60px;
         }
-        .signature-title {
-            font-size: 14px;
-            color: #555;
-        }
-        .action-buttons {
-            margin-top: 30px;
+
+        .slogan {
             text-align: center;
+            font-size: 14px;
+            font-style: italic;
+            margin: 20px auto;
+            padding: 0 10px;
         }
+
+        .links {
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
         .btn {
             display: inline-block;
-            padding: 10px 20px;
-            margin: 0 10px;
-            border-radius: 5px;
-            text-decoration: none;
+            background: #fff;
+            color: #7c0a0a;
             font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 5px;
             cursor: pointer;
-        }
-        .btn-download {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-        }
-        .btn-print {
-            background-color: #2196F3;
-            color: white;
-            border: none;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div class="system-card" id="qrcode-card">
-        <div class="card-header">
-            <div class="organization-title">SYSTEM BUILDERS ORGANIZATION</div>
-            <div class="organization-subtitle">BSCS</div>
+
+    <!-- FRONT CARD -->
+    <div class="card front" id="front-card">
+        <div class="top">
+            <img src="/storage/syborg_logo.png" class="logo" alt="Logo">
+            <div class="org-title">SYSTEM BUILDERS<br>ORGANIZATION</div>
+            <div class="course">BSCS</div>
         </div>
-        <div class="card-body">
-            <div class="college-name">COLLEGE OF COMPUTING STUDIES</div>
-            <div class="organization-subtitle">SAINT COLUMBAN COLLEGE, PAGADIAN CITY</div>
-            
-            <div class="student-name">{{ strtoupper($student->firstname . ' ' . $student->lastname) }}</div>
-            <div class="student-id">{{ $student->student_id }}</div>
-            
-            <div class="qr-container">
+        <div class="center">
+            <div class="qr">
                 @if ($qr_code_url)
-                    <img src="{{ $qr_code_url }}" alt="QR Code" style="width:180px; height:180px;">
+                    <img src="{{ $qr_code_url }}" alt="QR Code">
                 @else
-                    <p>No QR code available.</p>
+                    <p>No QR Code Available</p>
                 @endif
             </div>
-            
-            <div>
-                <div class="signature-line"></div>
-                <div class="signature-name">DR. PHILIPCRIS C. ENCARNACION</div>
-                <div class="signature-title">GGS DEAN</div>
-            </div>
+            <div class="student-name">{{ strtoupper($student->firstname . ' ' . $student->lastname) }}</div>
+        </div>
+        <div class="signature">
+            <div class="line"></div>
+            <div><strong>DR. PHILIPCRIS C. ENCARNACION</strong></div>
+            <div>CCS DEAN</div>
+        </div>
+    </div>
 
-            <div class="action-buttons">
-                <button onclick="downloadCard()" class="btn btn-download">Download Card</button>
-                <button onclick="window.print()" class="btn btn-print">Print Card</button>
+    <!-- BACK CARD -->
+    <div class="card back" id="back-card">
+        <div class="top">
+            <div class="org-title">SYSTEM BUILDERS<br>ORGANIZATION</div>
+        </div>
+        <div class="center">
+            <img src="/storage/syborg_logo.png" class="logo-large" alt="SYBORG Logo">
+            <div class="slogan">
+                “Where code, knowledge,<br>and innovation converge.”
             </div>
         </div>
+        <div class="links">
+            <p>https://facebook.com/SyBorgSCC</p>
+            <p>https://facebook.com/ccs.saintcolumban</p>
+        </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-buttons">
+        <button onclick="downloadCard('front-card')" class="btn">Download Front</button>
+        <button onclick="downloadCard('back-card')" class="btn">Download Back</button>
+        <button onclick="window.print()" class="btn">Print Both</button>
     </div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        function downloadCard() {
-            html2canvas(document.getElementById('qrcode-card')).then(canvas => {
+        function downloadCard(id) {
+            const el = document.getElementById(id);
+            html2canvas(el).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'SYBORG-ID-Card-{{ $student->student_id }}.png';
+                link.download = id + '.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
