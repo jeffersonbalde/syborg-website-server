@@ -10,6 +10,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route::get('/qrcode', function () {
+//     return view('emails.qrcode_card');
+// });
+
 // Route::post('/login', [AuthenticationController::class, 'login']);
 // Route::post('/logout', function (Request $request) {
 //     Auth::guard('web')->logout();

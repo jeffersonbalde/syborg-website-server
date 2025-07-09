@@ -160,7 +160,7 @@
             <div class="org-title">SYSTEM BUILDERS<br>ORGANIZATION</div>
         </div>
         <div class="center">
-            <img src="/storage/syborg_logo.png" class="logo-large" alt="SYBORG Logo">
+            <img src="https://syborg-server-wlpe4.ondigitalocean.app/uploads/Syborg_Logo/syborg_logo.png" class="logo" alt="Logo">
             <div class="slogan">
                 “Where code, knowledge,<br>and innovation converge.”
             </div>
