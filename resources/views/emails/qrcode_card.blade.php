@@ -133,7 +133,7 @@
     <!-- FRONT CARD -->
     <div class="card front" id="front-card">
         <div class="top">
-            <img src="/storage/syborg_logo.png" class="logo" alt="Logo">
+            <img src="https://syborg-server-wlpe4.ondigitalocean.app/uploads/Syborg_Logo/syborg_logo.png" class="logo" alt="Logo">
             <div class="org-title">SYSTEM BUILDERS<br>ORGANIZATION</div>
             <div class="course">BSCS</div>
         </div>

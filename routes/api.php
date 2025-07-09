@@ -52,7 +52,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/students/{id}/disapprove', [StudentController::class, 'disapprove']);
     Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
-    
+    // dashboard routes
+    Route::get('/admin/dashboard-stats', [StudentController::class,'getStats']);
 });
 
 Route::group(["middleware" => ["auth:sanctum"]], function() {

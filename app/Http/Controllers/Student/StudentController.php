@@ -262,5 +262,23 @@ class StudentController extends Controller
         'student' => $student,
         'qr_code_url' => asset("{$student->qr_code}")
     ]);
-}
+   }
+
+   public function getStats()
+   {
+        $total = StudentUser::count();
+        $approved = StudentUser::where('active_status', 1)->count();
+        $pending = StudentUser::where('active_status', operator: 2)->count();
+        $dissaproved = StudentUser::where('active_status', operator: 0)->count();
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+               'total_students' => $total,
+               'approved_students' => $approved,
+               'pending_students' => $pending,
+               'dissaproved_students' => $dissaproved,
+            ]
+        ]);
+    }
 }
