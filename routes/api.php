@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\Event\EventController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
@@ -28,7 +29,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             \App\Models\OwnerUser::class => 'owner',
             default => 'unknown'
         };
-        
+
         return response()->json([
             'user' => $user,
             'role' => $role
@@ -46,17 +47,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // HeroSlider Image routes
     Route::post("hero-slider-image", [HeroSliderImageController::class, "store"]);
 
-      // Student routes
+    // Student routes
     Route::get("students", [StudentController::class, "index"]);
     Route::put('/students/{id}/approve', [StudentController::class, 'approve']);
     Route::put('/students/{id}/disapprove', [StudentController::class, 'disapprove']);
     Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
-    // dashboard routes
+    // Dashboard routes
     Route::get('/admin/dashboard-stats', [StudentController::class,'getStats']);
+
+    // Event routes
+    Route::post("events", [EventController::class, "store"]);
+    Route::get("events", [EventController::class, "index"]);
 });
 
-Route::group(["middleware" => ["auth:sanctum"]], function() {
+Route::group(["middleware" => ["auth:sanctum"]], function () {
     // Protected routes
     Route::get("dashboard", [DashboardController::class, "index"]);
     Route::get("logout", [AuthenticationController::class, "logout"]);

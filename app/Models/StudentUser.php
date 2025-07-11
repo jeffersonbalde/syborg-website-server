@@ -9,7 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class StudentUser extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens;
+    use Notifiable;
 
     protected $table = 'tbl_StudentUser';
 
@@ -18,6 +19,11 @@ class StudentUser extends Authenticatable
         'course', 'year_level', 'status', 'gender', 'age',
         'birthday', 'contact_number', 'email', 'password', 'profile_picture', 'active_status', 'qr_code',
     ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'edp_number', 'edp_number');
+    }
 
     protected $hidden = ['password'];
 }
