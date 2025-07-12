@@ -10,19 +10,20 @@ use Illuminate\Support\Facades\Validator;
 
 class HeroSliderController extends Controller
 {
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             "title" => "required|string|max:255|unique:tbl_HeroSlider,title",
             "description" => "required|string|max:255|unique:tbl_HeroSlider,description",
             "content" => "required|string",
-            "image" => "nullable|image|mimes:jpg,jpeg,png,gif", 
+            "image" => "nullable|image|mimes:jpg,jpeg,png,gif",
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
-                "status"=> false,
-                "errors"=> $validator->errors(),
+                "status" => false,
+                "errors" => $validator->errors(),
             ]);
         }
 
@@ -33,29 +34,29 @@ class HeroSliderController extends Controller
         $model->save();
 
         if ($request->imageId > 0) {
-                $tempImage = HeroSliderImage::find($request->imageId);
+            $tempImage = HeroSliderImage::find($request->imageId);
 
-                if ($tempImage != null) {
-                    $extArray = explode('.', $tempImage->name);
-                    $ext = last($extArray);
-                    
-                    // create unique filename with model ID
-                    $fileName = strtotime("now") . $model->id . '.' . $ext;
+            if ($tempImage != null) {
+                $extArray = explode('.', $tempImage->name);
+                $ext = last($extArray);
 
-                    // Move from temp to final storage
-                    File::move(
-                        public_path("uploads/Hero_Slider/" . $tempImage->name),
-                        public_path("uploads/Hero_Slider_Image/" . $fileName)
-                    );
+                // create unique filename with model ID
+                $fileName = strtotime("now") . $model->id . '.' . $ext;
 
-                    // Save image path
-                    $model->image = $fileName;
-                    $model->save();
+                // Move from temp to final storage
+                File::move(
+                    public_path("uploads/Hero_Slider/" . $tempImage->name),
+                    public_path("uploads/Hero_Slider_Image/" . $fileName)
+                );
 
-                    // Clean temp DB
-                    $tempImage->delete();
-                }
+                // Save image path
+                $model->image = $fileName;
+                $model->save();
+
+                // Clean temp DB
+                $tempImage->delete();
             }
+        }
 
 
         return response()->json([
@@ -66,12 +67,32 @@ class HeroSliderController extends Controller
 
     }
 
-    public function index() {
-        $heroSlider = HeroSlider::orderBy("created_at", "DESC")->get();
+    public function index(Request $request)
+    {
+        $query = HeroSlider::query()->orderBy("created_at", "DESC");
+
+        // Search filter (if you want to implement search functionality)
+        if ($request->has('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'like', '%'.$request->search.'%')
+                  ->orWhere('description', 'like', '%'.$request->search.'%');
+            });
+        }
+
+        // Get pagination parameters
+        $page = $request->get('page', 1);
+        $perPage = $request->get('per_page', 10);
+
+        $sliders = $query->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
-            "status" => true,
-            "data" => $heroSlider,
+            'data' => $sliders->items(),
+            'meta' => [
+                'total' => $sliders->total(),
+                'per_page' => $sliders->perPage(),
+                'current_page' => $sliders->currentPage(),
+                'last_page' => $sliders->lastPage(),
+            ]
         ]);
     }
 
@@ -79,7 +100,7 @@ class HeroSliderController extends Controller
     {
         $heroSlider = HeroSlider::find($id);
 
-        if($heroSlider == null) {
+        if ($heroSlider == null) {
             return response()->json([
                 "status" => false,
                 "message" => "Hero slider not found",
@@ -90,14 +111,14 @@ class HeroSliderController extends Controller
             "title" => "required|string|max:255|unique:tbl_HeroSlider,title," . $id,
             "description" => "required|string|max:255|unique:tbl_HeroSlider,description," . $id,
             "content" => "required|string",
-            "image" => "nullable|image|mimes:jpg,jpeg,png,gif", 
+            "image" => "nullable|image|mimes:jpg,jpeg,png,gif",
         ]);
 
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
-                "status"=> false,
-                "errors"=> $validator->errors(),
+                "status" => false,
+                "errors" => $validator->errors(),
             ]);
         }
 
@@ -144,7 +165,7 @@ class HeroSliderController extends Controller
     {
         $heroSlider = HeroSlider::find($id);
 
-        if($heroSlider == null) {
+        if ($heroSlider == null) {
             return response()->json([
                 "status" => false,
                 "message" => "Hero Slider not found",
@@ -159,9 +180,9 @@ class HeroSliderController extends Controller
 
     public function destroy($id)
     {
-        $heroSlider = HeroSlider::find($id);      
+        $heroSlider = HeroSlider::find($id);
 
-        if($heroSlider == null) {
+        if ($heroSlider == null) {
             return response()->json([
                 "status" => false,
                 "message" => "Hero slider not found.",
@@ -172,7 +193,7 @@ class HeroSliderController extends Controller
 
         return response()->json([
             "status" => true,
-            "message"=> "Hero Slider deleted successfully",
+            "message" => "Hero Slider deleted successfully",
         ]);
     }
 }
