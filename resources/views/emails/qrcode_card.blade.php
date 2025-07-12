@@ -135,7 +135,7 @@
         <div class="top">
             <img src="https://syborg-server-wlpe4.ondigitalocean.app/uploads/Syborg_Logo/syborg_logo.png" class="logo" alt="Logo">
             <div class="org-title">SYSTEM BUILDERS<br>ORGANIZATION</div>
-            <div class="course">BSCS</div>
+            <div class="course">{{ $student->course }}</div>
         </div>
         <div class="center">
             <div class="qr">
