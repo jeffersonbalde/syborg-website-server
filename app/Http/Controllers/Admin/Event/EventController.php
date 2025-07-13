@@ -116,14 +116,27 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $this->validateEventData($request);
+        try {
+            $validatedData = $this->validateEventData($request);
 
-        $event = Events::create($validatedData);
+            $event = Events::create($validatedData);
 
-        return response()->json([
-            'message' => 'Event created successfully.',
-            'data' => $event
-        ], 201);
+            return response()->json([
+                'message' => 'Event created successfully.',
+                'data' => $event
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create event',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     protected function validateEventData(Request $request, Events $event = null)
@@ -167,4 +180,16 @@ class EventController extends Controller
         'end_time.after' => 'The end time must be after the start time'
     ]);
     }
+
+
+    public function getEventsForAttendance()
+    {
+        $events = Events::select('id', 'title', 'event_date', 'start_time', 'end_time')
+            ->whereDate('event_date', '>=', now()->subDays(30))
+            ->orderBy('event_date', 'desc')
+            ->get();
+
+        return response()->json($events);
+    }
+
 }

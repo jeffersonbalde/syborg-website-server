@@ -8,6 +8,8 @@ class Attendance extends Model
 {
     protected $table = 'tbl_Attendance';
 
+    public $timestamps = false;
+
     protected $fillable = ['event_id', 'edp_number', 'time_in', 'time_out', 'present', 'notes',];
 
     public function event()
@@ -19,4 +21,5 @@ class Attendance extends Model
     {
         return $this->belongsTo(StudentUser::class, 'edp_number', 'edp_number');
     }
+    
 }

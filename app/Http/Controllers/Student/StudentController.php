@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\StudentProfilePicture;
 use App\Models\StudentUser;
+use App\Models\Attendance;
+use App\Models\Events;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -284,4 +286,57 @@ class StudentController extends Controller
             ]
         ]);
     }
+
+public function getAttendanceRecords(Request $request)
+{
+    $student = $request->user();
+    
+    // Get all events (within a reasonable time frame, e.g., last 6 months)
+    $allEvents = Events::where('event_date', '>=', now()->subMonths(6))
+        ->orderBy('event_date', 'desc')
+        ->get();
+    
+    // Get events where student has attendance records
+    $attendedEvents = Attendance::with('event')
+        ->where('edp_number', $student->edp_number)
+        ->get()
+        ->keyBy('event_id'); // Key by event_id for easy lookup
+    
+    // Prepare response data
+    $records = [];
+    
+    foreach ($allEvents as $event) {
+        $attendance = $attendedEvents[$event->id] ?? null;
+        
+        if ($attendance) {
+            // Student has attendance record for this event
+            $records[] = [
+                'event_id' => $event->id,
+                'event_title' => $event->title,
+                'event_date' => $event->event_date,
+                'location' => $event->location,
+                'time_in' => $attendance->time_in,
+                'time_out' => $attendance->time_out,
+                'status' => $attendance->present ? 'Present' : 'Absent',
+                'record_type' => 'attended' // Mark as attended record
+            ];
+        } else {
+            // Student has no attendance record for this event
+            $records[] = [
+                'event_id' => $event->id,
+                'event_title' => $event->title,
+                'event_date' => $event->event_date,
+                'location' => $event->location,
+                'time_in' => null,
+                'time_out' => null,
+                'status' => 'Absent',
+                'record_type' => 'missed' // Mark as missed event
+            ];
+        }
+    }
+    
+    return response()->json([
+        'data' => $records
+    ]);
+}
 }
